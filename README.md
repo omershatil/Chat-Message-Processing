@@ -1,3 +1,82 @@
+# The problem:
+
+Write a program that reads and processes a '\n' delimited input file, where each line is a JSON encoded message in one of the following formats.
+
+### Chat Message
+
+    {
+      "id":"45094d07-e2cf-11e4-9454-56847afe9799",
+      "from":"visitor5",
+      "type":"message",
+      "site_id":"123",
+      "data":{
+        "message":"Hi, how's it going",
+      },
+      "timestamp":1429026445,
+    }
+
+This message represents text sent from a website visitor to a site ("site_id").
+
+### Status
+
+    {
+      "id":"53367bc7-e2cf-11e4-81da-56847afe9799",
+      "from":"operator1",
+      "site_id":"123",
+      "type":"status",
+      "data":{
+        "status":"online",
+      }
+      "timestamp":1429026448,
+    }
+
+This message represents a chat operator signing either "online" or "offline".
+
+## Processing
+
+While reading through the file, the program should create and maintain a summary of activity, either in memory or in an external datastore of your choosing.
+
+Messages *are not* guaranteed to be in order while processing. Every unique message will have a unique "id", but it may be sent more than once. You should make an effort to not process duplicate messages. Every unique message will also have a unique timestamp.
+
+Each site (indicated by "site_id" in all messages) represents an account in our system. If a site has at least one operator signed online, we consider that site "online" and website visitors will be able to send chat messages to the operators for that site. If there are no operators online, the site will be considered "offline" and a visitor's messages will be sent via email instead of chat. You should track which messages are sent via chat, and which are sent via email. You can assume that all sites start in an "offline" mode.
+
+After processing, your program should output to stdout a summary of chat activity, one line per site containing the number of chat messages sent, the number of emails sent, as well as a count of the number of unique visitor IDs + unique operator IDs seen throughout processing.
+
+    site_id,messages=count,emails=count,operators=count,visitors=count
+
+Output should be ordered by alphanumerically ascending site ID, for example:
+
+    123,messages=1,emails=0,operators=1,visitors=2
+    124,messages=2,emails=1,operators=4,visitors=1
+    ...
+
+## Validation
+
+Sample input and output files are included.
+
+We will test your program with at least 10M lines of input, and run it on a machine with approximately 2GB of RAM.
+
+## Musts
+
+ 1. Can be written in language of your choosing
+ 1. Include a README describing how to build and run your program
+ 1. Can use memory only, or any external database or similar of your choosing
+ 1. Build and run on an Ubuntu 12.04 machine without much fuss
+   * open to interpretation, but safe to say you shouldn't rely on that one bug in IRIX 5.3's XFS implementation, etc.
+   * any external database you use should be simply installable by `apt-get` or language tooling (`pip`, `go get`, `gem`, etc.)
+ 1. Present correct output
+ 1. Survive failure: if your program and/or database is force killed, the eventual output should still be correct 
+ 1. While speed is important, come prepared to talk about how you've chosen to architect your solution, and how you would add new features or support different constraints
+
+
+
+## Nice-to-haves
+
+ 1. Avoid reprocessing from the start in the case of a restart after a failure
+ 1. Avoid reprocessing duplicate messages
+
+THE SOLUTION:
+=============
 Installation and Execution:
 --------------------------
 - There are no installation steps. The script works with the standard Python 2.7 modules.
